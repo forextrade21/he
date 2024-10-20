@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Journal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>Menu</h2>
+            <ul>
+                <li><a href="#add-trade-section">Add Trade</a></li>
+                <li><a href="#open-trades-section">Open Trades</a></li>
+                <li><a href="#closed-trades-section">Closed Trades</a></li>
+            </ul>
+        </aside>
+
+        <main>
+            <h1>Trading Journal</h1>
+
+            <!-- Add Trade Form -->
+            <section id="add-trade-section">
+                <h2>Add New Trade</h2>
+                <form action="/add_trade" method="POST" enctype="multipart/form-data" class="trade-form">
+                    <div class="form-group">
+                        <label for="day">Day</label>
+                        <input type="number" id="day" name="day" min="1" max="31" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="month">Month</label>
+                        <input type="number" id="month" name="month" min="1" max="12" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="year">Year</label>
+                        <input type="number" id="year" name="year" min="2000" max="2100" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pair">Pair</label>
+                        <input type="text" id="pair" name="pair" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bias">Bias</label>
+                        <input type="text" id="bias" name="bias" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="outcome">Outcome</label>
+                        <input type="text" id="outcome" name="outcome" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="profit_loss">Profit/Loss</label>
+                        <input type="number" id="profit_loss" name="profit_loss" step="any" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="entry_price">Entry Price</label>
+                        <input type="number" id="entry_price" name="entry_price" step="any" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exit_price">Exit Price</label>
+                        <input type="number" id="exit_price" name="exit_price" step="any" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="trade_image">Upload Trade Image</label>
+                        <input type="file" id="trade_image" name="trade_image" accept="image/*">
+                    </div>
+                    <button type="submit">Add Trade</button>
+                </form>
+            </section>
+
+            <!-- Open Trades Section -->
+            <section id="open-trades-section">
+                <h2>Open Trades</h2>
+                <table class="trades-table">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Month</th>
+                            <th>Year</th>
+                            <th>Pair</th>
+                            <th>Bias</th>
+                            <th>Outcome</th>
+                            <th>Profit/Loss</th>
+                            <th>Entry Price</th>
+                            <th>Exit Price</th>
+                            <th>Image</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trade in open_trades %}
+                        <tr>
+                            <td>{{ trade.day }}</td>
+                            <td>{{ trade.month }}</td>
+                            <td>{{ trade.year }}</td>
+                            <td>{{ trade.pair }}</td>
+                            <td>{{ trade.bias }}</td>
+                            <td>{{ trade.outcome }}</td>
+                            <td>{{ trade.profit_loss }}</td>
+                            <td>{{ trade.entry_price }}</td>
+                            <td>{{ trade.exit_price }}</td>
+                            <td>
+                                {% if trade.image %}
+                                <img src="{{ url_for('static', filename='uploads/' ~ trade.image) }}" alt="Trade Image" style="width: 100px; height: auto;">
+                                {% else %}
+                                No Image
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="/edit_trade/{{ loop.index0 }}" class="button">Edit</a>
+                                <form action="/close_trade/{{ loop.index0 }}" method="POST" style="display:inline;">
+                                    <button type="submit">Close Trade</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Closed Trades Section -->
+            <section id="closed-trades-section">
+                <h2>Closed Trades</h2>
+                <table class="trades-table">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Month</th>
+                            <th>Year</th>
+                            <th>Pair</th>
+                            <th>Bias</th>
+                            <th>Outcome</th>
+                            <th>Profit/Loss</th>
+                            <th>Entry Price</th>
+                            <th>Exit Price</th>
+                            <th>Image</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trade in closed_trades %}
+                        <tr>
+                            <td>{{ trade.day }}</td>
+                            <td>{{ trade.month }}</td>
+                            <td>{{ trade.year }}</td>
+                            <td>{{ trade.pair }}</td>
+                            <td>{{ trade.bias }}</td>
+                            <td>{{ trade.outcome }}</td>
+                            <td>{{ trade.profit_loss }}</td>
+                            <td>{{ trade.entry_price }}</td>
+                            <td>{{ trade.exit_price }}</td>
+                            <td>
+                                {% if trade.image %}
+                                <img src="{{ url_for('static', filename='uploads/' ~ trade.image) }}" alt="Trade Image" style="width: 100px; height: auto;">
+                                {% else %}
+                                No Image
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
